@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {
+  I18nManager,
   LayoutChangeEvent,
   StyleProp,
   StyleSheet,
@@ -12,13 +13,14 @@ import { SceneView } from './SceneView';
 import { TabBar } from './TabBar';
 import type {
   Layout,
+  LocaleDirection,
   NavigationState,
   PagerProps,
   Route,
   SceneRendererProps,
 } from './types';
 
-export type Props<T extends Route> = PagerProps & {
+export type Props<T extends Route> = Omit<PagerProps, 'layoutDirection'> & {
   onIndexChange: (index: number) => void;
   navigationState: NavigationState<T>;
   renderScene: (props: SceneRendererProps & { route: T }) => React.ReactNode;
@@ -31,6 +33,7 @@ export type Props<T extends Route> = PagerProps & {
   lazy?: ((props: { route: T }) => boolean) | boolean;
   lazyPreloadDistance?: number;
   sceneContainerStyle?: StyleProp<ViewStyle>;
+  direction?: LocaleDirection;
   pagerStyle?: StyleProp<ViewStyle>;
   style?: StyleProp<ViewStyle>;
 };
@@ -50,6 +53,7 @@ export function TabView<T extends Route>({
   sceneContainerStyle,
   pagerStyle,
   style,
+  direction = I18nManager.getConstants().isRTL ? 'rtl' : 'ltr',
   swipeEnabled = true,
   tabBarPosition = 'top',
   animationEnabled = true,
@@ -92,6 +96,7 @@ export function TabView<T extends Route>({
         animationEnabled={animationEnabled}
         overScrollMode={overScrollMode}
         style={pagerStyle}
+        layoutDirection={direction}
       >
         {({ position, render, addEnterListener, jumpTo }) => {
           // All of the props here must not change between re-renders
