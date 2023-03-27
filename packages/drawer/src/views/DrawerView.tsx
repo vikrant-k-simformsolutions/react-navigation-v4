@@ -67,6 +67,8 @@ export default class DrawerView extends React.PureComponent<Props, State> {
     lazy: true,
   };
 
+  listener: any = null;
+
   static getDerivedStateFromProps(nextProps: Props, prevState: State) {
     const { index } = nextProps.navigation.state;
 
@@ -92,7 +94,7 @@ export default class DrawerView extends React.PureComponent<Props, State> {
       this.handleDrawerOpen();
     }
 
-    Dimensions.addEventListener('change', this.updateWidth);
+    this.listener = Dimensions.addEventListener('change', this.updateWidth);
   }
 
   componentDidUpdate(prevProps: Props) {
@@ -109,7 +111,7 @@ export default class DrawerView extends React.PureComponent<Props, State> {
   }
 
   componentWillUnmount() {
-    Dimensions.removeEventListener('change', this.updateWidth);
+    this.listener?.remove();
   }
 
   context!: React.ContextType<typeof ThemeContext>;

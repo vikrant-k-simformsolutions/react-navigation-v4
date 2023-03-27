@@ -20,6 +20,7 @@ export default function withDimensions<Props extends InjectedProps>(
 ): React.ComponentType<Pick<Props, Exclude<keyof Props, keyof InjectedProps>>> {
   class EnhancedComponent extends React.Component {
     static displayName = `withDimensions(${WrappedComponent.displayName})`;
+    listener: any = null;
 
     constructor(props: Props) {
       super(props);
@@ -32,11 +33,14 @@ export default function withDimensions<Props extends InjectedProps>(
     }
 
     componentDidMount() {
-      Dimensions.addEventListener('change', this.handleOrientationChange);
+      this.listener = Dimensions.addEventListener(
+        'change',
+        this.handleOrientationChange
+      );
     }
 
     componentWillUnmount() {
-      Dimensions.removeEventListener('change', this.handleOrientationChange);
+      this.listener?.remove();
     }
 
     handleOrientationChange = ({ window }: { window: ScaledSize }) => {

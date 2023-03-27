@@ -13,12 +13,17 @@ export default function (WrappedComponent) {
       this.state = { isLandscape };
     }
 
+    listener = null;
+
     componentDidMount() {
-      Dimensions.addEventListener('change', this.handleOrientationChange);
+      this.listener = Dimensions.addEventListener(
+        'change',
+        this.handleOrientationChange
+      );
     }
 
     componentWillUnmount() {
-      Dimensions.removeEventListener('change', this.handleOrientationChange);
+      this.listener?.remove();
     }
 
     handleOrientationChange = ({ window }) => {
